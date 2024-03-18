@@ -1,80 +1,76 @@
-import { prisma } from '../utils/prisma/index.js'
-
 export class ResumeRepository {
+  constructor(prisma) {
+    this.prisma = prisma;
+  }
+  // 데이터베이스 입력
+  createResume = async (userId, title, introduction, author, status) => {
+    const resume = await this.prisma.resume.create({
+      data: {
+        userId: +userId,
+        title,
+        introduction,
+        author,
+        status,
+      },
+    });
+    return resume;
+  };
 
-    // 데이터베이스 입력
-    createResume = async (userId, title, introduction, author, status) => {
+  getAllResumes = async () => {
+    const resumes = await this.prisma.resume.findMany({
+      select: {
+        resumeId: true,
+        title: true,
+        introduction: true,
+        author: true,
+        status: true,
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return resumes;
+  };
 
-        const resume = await prisma.resume.create({
-            data: {
-                userId: +userId,
-                title,
-                introduction,
-                author,
-                status,
-            },
-        });
-        return resume;
-    };
+  getResumeById = async (resumeId) => {
+    const resume = await this.prisma.resume.findFirst({
+      where: { resumeId: +resumeId },
+      select: {
+        resumeId: true,
+        title: true,
+        introduction: true,
+        author: true,
+        status: true,
+        createdAt: true,
+        userId: true,
+      },
+    });
+    return resume;
+  };
 
-    getAllResumes = async () => {
-        const resumes = await prisma.resume.findMany({
-            select: {
-                resumeId: true,
-                title: true,
-                introduction: true,
-                author: true,
-                status: true,
-                createdAt: true,
-            },
-            orderBy: {
-                createdAt: "desc",
-            },
-        });
-        return resumes;
-    };
+  updateResume = async (resumeId, title, introduction, status) => {
+    const resume = await this.prisma.resume.update({
+      data: {
+        title,
+        introduction,
+        status: status || "APPLY",
+      },
+      where: {
+        resumeId: +resumeId,
+      },
+    });
 
-    getResumeById = async (resumeId) => {
-        const resume = await prisma.resume.findFirst({
-            where: { resumeId: +resumeId },
-            select: {
-                resumeId: true,
-                title: true,
-                introduction: true,
-                author: true,
-                status: true,
-                createdAt: true,
-                userId: true, 
-            },
-        });
-        return resume;
-    };
-    
+    if (!resume) {
+      return null;
+    }
 
-    updateResume = async (resumeId, title, introduction, status) => {
+    return resume;
+  };
 
-        const resume = await prisma.resume.update({
-            data: {
-                title,
-                introduction,
-                status: status || "APPLY",
-            },
-            where: {
-                resumeId: +resumeId,
-            },
-        });
-
-        if(!resume) {
-            return null;
-        }
-
-        return resume
-    };
-
-    deleteResume = async (resumeId) => {
-
-        await prisma.resume.delete({
-            where: { resumeId: +resumeId },
-        });
-    };
+  deleteResume = async (resumeId) => {
+    await this.prisma.resume.delete({
+      where: { resumeId: +resumeId },
+    });
+  };
 }

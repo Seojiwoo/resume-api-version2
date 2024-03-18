@@ -1,7 +1,7 @@
-import { ResumeRepository } from "../repository/resume.repository.js";
-
 export class ResumeService {
-  resumeRepository = new ResumeRepository();
+  constructor(resumeRepository) {
+    this.resumeRepository = resumeRepository;
+  }
 
   // 회원가입
   createResume = async (userId, title, introduction, author, status) => {

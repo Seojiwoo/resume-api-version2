@@ -1,8 +1,7 @@
-import { ResumeService } from "../service/resume.service.js";
-// import authMiddleware from "../middlewares/auth.middleware.js";
-
 export class ResumeController {
-  resumeService = new ResumeService();
+  constructor(resumeService) {
+    this.resumeService = resumeService;
+  }
 
   // 이력서 생성
   createResume = async (req, res, next) => {

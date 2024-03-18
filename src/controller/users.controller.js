@@ -1,10 +1,7 @@
-import { UsersService } from "../service/users.service.js";
-
 export class UsersController {
   constructor(usersService) {
     this.usersService = usersService;
   }
-  // usersService = new UsersService();
   // 회원가입
   createUser = async (req, res, next) => {
     const { email, password, passwordcheck, name } = req.body;
